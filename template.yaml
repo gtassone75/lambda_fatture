@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  quichi_fatture
+
+  Sample SAM Template for quichi_fatture
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 180
+  Api:
+    Cors: "'*'"
+    Auth:
+      DefaultAuthorizer: Cognito
+      Authorizers:
+        Cognito:
+          UserPoolArn: arn:aws:cognito-idp:eu-west-1:875794812306:userpool/eu-west-1_hmsxUXAmC
+Resources:
+  ListClientiFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: get_lista_clienti/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Events:
+        ListClienti:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /clienti
+            Method: get
+
+Outputs:
+  ListClientiApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/clienti/"
+  ListClientiFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt ListClientiFunction.Arn
+  ListClientiFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt ListClientiFunctionRole.Arn
